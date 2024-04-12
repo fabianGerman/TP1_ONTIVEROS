@@ -1,42 +1,38 @@
-PVector centro;
-PVector derecha;
-PVector punto;
+PVector puntoFijo;
+PVector puntoMovil;
 
 void setup() {
   size(600, 400);
-  centro = new PVector(width/2, height/2); // Define el centro de la pantalla
-  derecha = new PVector(1, 0); // Vector que apunta siempre hacia la derecha
-  punto = new PVector(mouseX, mouseY); // Inicializa el punto en la posición del mouse
+  puntoFijo = new PVector(width/2, height/2); // Punto fijo en el centro
+  puntoMovil = new PVector(width/2, height/2); // Punto móvil inicialmente en el centro
 }
 
 void draw() {
-  background(0);
+  background(255);
   
-  // Actualiza la posición del punto con la posición del mouse
-  punto.set(mouseX, mouseY);
+  // Actualiza la posición del punto móvil con la posición del mouse
+  puntoMovil.set(mouseX, mouseY);
   
-  // Dibuja el punto en el centro
+  // Dibuja el punto fijo en el centro
   fill(0);
-  ellipse(centro.x, centro.y, 10, 10);
+  ellipse(puntoFijo.x, puntoFijo.y, 10, 10);
   
-  // Dibuja el vector que apunta siempre hacia la derecha
-  PVector derechaCopiada = derecha.copy(); // Copia el vector para no modificar el original
-  vector(centro, derechaCopiada.mult(200), color(255, 0, 0)); // Escalamos la copia del vector para visualización
+  // Dibuja el punto móvil
+  fill(255, 0, 0);
+  ellipse(puntoMovil.x, puntoMovil.y, 10, 10);
   
-  // Dibuja el vector que apunta al punto
-  PVector puntoVector = PVector.sub(punto, centro); // Calcula el vector desde el centro hacia el punto
-  vector(centro, puntoVector, color(0, 0, 255));
+  // Dibuja la línea recta fija hacia la derecha del punto móvil
+  PVector derecha = new PVector(50, 0); // Vector que apunta hacia la derecha
+  PVector puntoDerecha = PVector.add(puntoMovil, derecha);
+  line(puntoMovil.x, puntoMovil.y, puntoDerecha.x, puntoDerecha.y);
   
-  // Muestra el punto en la posición del mouse
-  fill(0, 0, 255);
-  ellipse(punto.x, punto.y, 10, 10);
+  // Dibuja la línea que apunta al punto fijo
+  PVector haciaPuntoFijo = PVector.sub(puntoFijo, puntoMovil);
+  haciaPuntoFijo.normalize(); // Normaliza el vector
+  haciaPuntoFijo.mult(50); // Escala el vector
+  PVector puntoHaciaFijo = PVector.add(puntoMovil, haciaPuntoFijo);
+  line(puntoMovil.x, puntoMovil.y, puntoHaciaFijo.x, puntoHaciaFijo.y);
   
-  // Imprime las coordenadas del punto por consola
-  println("Coordenadas del punto: (" + punto.x + ", " + punto.y + ")");
-}
-
-void vector(PVector origen, PVector vector, color col) {
-  stroke(col);
-  strokeWeight(2);
-  line(origen.x, origen.y, origen.x + vector.x, origen.y + vector.y);
+  // Imprime la posición del punto móvil por consola
+  println("Posición del punto móvil: (" + puntoMovil.x + ", " + puntoMovil.y + ")");
 }
